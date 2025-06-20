@@ -2,6 +2,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { UpgradeToSuperAdmin } from '@/components/UpgradeToSuperAdmin';
 import { 
   Crown, 
   Briefcase, 
@@ -105,13 +106,39 @@ const quickStats = [
 export default function Dashboard() {
   const { profile } = useAuth();
 
-  if (!profile) return null;
+  console.log('Dashboard - Current profile:', profile);
+
+  if (!profile) {
+    console.log('Dashboard - No profile found, showing loading');
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   const roleInfo = roleGreetings[profile.role as keyof typeof roleGreetings];
+  
+  if (!roleInfo) {
+    console.log('Dashboard - No role info found for role:', profile.role);
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900">Invalid Role</h1>
+          <p className="text-gray-600">Your role "{profile.role}" is not recognized.</p>
+        </div>
+        <UpgradeToSuperAdmin />
+      </div>
+    );
+  }
+
   const RoleIcon = roleInfo.icon;
 
   return (
     <div className="space-y-6">
+      {/* Show upgrade option for non-super-admin users */}
+      {profile.role !== 'super_admin' && <UpgradeToSuperAdmin />}
+
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>

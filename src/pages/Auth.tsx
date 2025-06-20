@@ -27,15 +27,18 @@ export default function Auth() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
 
+    console.log('Sign in attempt:', email);
     const { error } = await signIn(email, password);
     
     if (error) {
+      console.error('Sign in failed:', error);
       toast({
         title: 'Sign In Failed',
         description: error.message,
         variant: 'destructive',
       });
     } else {
+      console.log('Sign in successful');
       toast({
         title: 'Welcome back!',
         description: 'You have been signed in successfully.',
@@ -53,16 +56,20 @@ export default function Auth() {
     const email = formData.get('email') as string;
     const password = formData.get('password') as string;
     const fullName = formData.get('fullName') as string;
+    const phone = formData.get('phone') as string;
 
-    const { error } = await signUp(email, password, fullName);
+    console.log('Sign up attempt:', email);
+    const { error } = await signUp(email, password, fullName, phone);
     
     if (error) {
+      console.error('Sign up failed:', error);
       toast({
         title: 'Sign Up Failed',
         description: error.message,
         variant: 'destructive',
       });
     } else {
+      console.log('Sign up successful');
       toast({
         title: 'Account Created!',
         description: 'Please check your email to verify your account.',
@@ -174,6 +181,16 @@ export default function Auth() {
                       name="email"
                       type="email"
                       placeholder="Enter your email"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-phone">Phone Number</Label>
+                    <Input
+                      id="signup-phone"
+                      name="phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
                       required
                     />
                   </div>

@@ -136,15 +136,31 @@ export function Sidebar() {
   const { profile, signOut } = useAuth();
   const location = useLocation();
 
-  if (!profile) return null;
+  console.log('Sidebar - Current profile:', profile);
+  console.log('Sidebar - Current location:', location.pathname);
+
+  if (!profile) {
+    console.log('Sidebar - No profile found');
+    return null;
+  }
 
   const userRole = profile.role as keyof typeof roleConfig;
   const roleInfo = roleConfig[userRole];
+  
+  if (!roleInfo) {
+    console.log('Sidebar - No role info found for role:', userRole);
+    return null;
+  }
+  
   const RoleIcon = roleInfo.icon;
 
-  const filteredNavigation = navigation.filter(item => 
-    item.roles.includes(profile.role)
-  );
+  const filteredNavigation = navigation.filter(item => {
+    const hasAccess = item.roles.includes(profile.role);
+    console.log(`Navigation item ${item.title}: user role ${profile.role}, required roles [${item.roles.join(', ')}], has access: ${hasAccess}`);
+    return hasAccess;
+  });
+
+  console.log('Sidebar - Filtered navigation items:', filteredNavigation.length);
 
   return (
     <div className="flex h-full w-64 flex-col bg-white border-r border-gray-200">
@@ -184,6 +200,7 @@ export function Sidebar() {
                   ? "bg-blue-50 text-blue-700 border-r-2 border-blue-700"
                   : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
               )}
+              onClick={() => console.log('Navigating to:', item.href)}
             >
               <Icon className="h-5 w-5 mr-3" />
               {item.title}
@@ -197,7 +214,10 @@ export function Sidebar() {
         <Button
           variant="ghost"
           className="w-full justify-start"
-          onClick={signOut}
+          onClick={() => {
+            console.log('Signing out...');
+            signOut();
+          }}
         >
           <LogOut className="h-5 w-5 mr-3" />
           Sign Out
