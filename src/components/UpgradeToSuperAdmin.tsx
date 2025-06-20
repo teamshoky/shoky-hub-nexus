@@ -37,11 +37,13 @@ export function UpgradeToSuperAdmin() {
         console.log('Successfully upgraded to super admin');
         toast({
           title: 'Role Updated!',
-          description: 'You are now a Super Admin. Please refresh the page.',
+          description: 'You are now a Super Admin. The page will reload to apply changes.',
         });
         
-        // Refresh the page to reload the profile
-        window.location.reload();
+        // Use a timeout to allow the toast to show before reload
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
       }
     } catch (error) {
       console.error('Unexpected error:', error);
